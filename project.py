@@ -1,3 +1,4 @@
+#Importing Libraries
 import streamlit as st
 from streamlit_option_menu import option_menu
 from sklearn.ensemble import RandomForestClassifier
@@ -9,9 +10,11 @@ import matplotlib.pyplot as plt
 # Load and prepare data
 model_df = pd.read_csv("dataset.csv")
 
+#Make a LabelEncoder to chnage text values in GATE_Score into numbers
 le_gate = LabelEncoder()
+#Change the text values in GATE_Score to numbers and save them back in the same column
 model_df["GATE_Score"] = le_gate.fit_transform(model_df["GATE_Score"])
-
+#here same thing is done for the Should_Do_Master column 
 le_master = LabelEncoder()
 model_df["Should_Do_Masters"] = le_master.fit_transform(model_df["Should_Do_Masters"])
 
@@ -23,6 +26,7 @@ if le_master.transform(['Yes'])[0] != 1:
 gate_label_map = dict(zip(le_gate.transform(le_gate.classes_), le_gate.classes_))
 master_label_map = {0: "No", 1: "Yes"}
 
+#here x and y are input feature and output feature respectively
 X = model_df[["GATE_Score", "Salary"]]
 y = model_df["Should_Do_Masters"]
 
@@ -30,9 +34,9 @@ x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = RandomForestClassifier(n_estimators=500, random_state=42)
 model.fit(x_train, y_train)
 
-# UI
+# UI interface 
 st.title("🎓 Masters Decision Support System")
-
+#with the sidebar it shows the sidebar of it
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",
@@ -75,6 +79,7 @@ elif selected == "Prediction Model":
     salary_input = st.number_input("Enter current salary (INR)", value=500000)
 
     if st.button("Predict"):
+        #here in below line the catgerical is transform into numbers and then in line no 85 it is done in reverse manner 
         gate_encoded = le_gate.transform([gate_input])[0]
         prediction = model.predict([[gate_encoded, salary_input]])
         result = le_master.inverse_transform(prediction)[0]
@@ -87,6 +92,7 @@ elif selected == "Graph":
     if feature == "GATE_Score":
         st.subheader("GATE Score Distribution")
         counts = model_df[feature].value_counts().sort_index()
+        #Convert the numeric codes back to readable labels 
         labels = [gate_label_map[i] for i in counts.index]
         plt.figure()
         plt.bar(labels, counts.values, color="purple")
