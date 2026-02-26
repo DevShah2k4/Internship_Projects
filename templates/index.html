@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blog Post Generator 🤖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Blog Post Generator 🤖</h1>
+        <form id="blogForm">
+            <label for="topic">Blog Topic:</label>
+            <input type="text" id="topic" name="topic" placeholder="e.g., The Future of AI" required>
+
+            <label for="keywords">Keywords (comma-separated):</label>
+            <input type="text" id="keywords" name="keywords" placeholder="e.g., AI, innovation, technology, future">
+
+            <label for="tone">Tone:</label>
+            <select id="tone" name="tone">
+                <option value="informative">Informative</option>
+                <option value="casual">Casual</option>
+                <option value="professional">Professional</option>
+                <option value="humorous">Humorous</option>
+                <option value="persuasive">Persuasive</option>
+            </select>
+
+            <label for="length">Length:</label>
+            <select id="length" name="length">
+                <option value="short">Short (approx. 200 words)</option>
+                <option value="medium" selected>Medium (approx. 500 words)</option>
+                <option value="long">Long (approx. 1000 words)</option>
+            </select>
+
+            <button type="submit">Generate Blog Post</button>
+        </form>
+
+        <div id="loading" class="hidden">Generating... please wait!</div>
+        <div id="error" class="hidden error-message"></div>
+        <div id="blogPostOutput" class="hidden">
+            <h2>Generated Blog Post:</h2>
+            <div id="content"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('blogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const topic = document.getElementById('topic').value;
+            const keywords = document.getElementById('keywords').value;
+            const tone = document.getElementById('tone').value;
+            const length = document.getElementById('length').value;
+
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const blogPostOutputDiv = document.getElementById('blogPostOutput');
+            const contentDiv = document.getElementById('content');
+
+            loadingDiv.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
+            blogPostOutputDiv.classList.add('hidden');
+            contentDiv.innerHTML = '';
+
+            try {
+                const response = await fetch('/generate_blog_post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topic, keywords, tone, length })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    contentDiv.innerHTML = data.blog_post.replace(/\n/g, '<br>');
+                    blogPostOutputDiv.classList.remove('hidden');
+                } else {
+                    errorDiv.textContent = data.error || 'An unknown error occurred.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = 'Network error or server unavailable.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
