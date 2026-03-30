@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crowd Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+body.dark {
+    background: #121212;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 22px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.upload-box {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.image-grid {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.image-grid img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.insights {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.info-section {
+    margin-top: 40px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.info-card {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.about {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: white;
+    cursor: pointer;
+}
+
+.download {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    background: #28a745;
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+}
+
+.upload-again {
+    display: block;
+    margin-top: 10px;
+    background: #ff9800;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+<script>
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
+
+function uploadAgain() {
+    window.location.href = "/";
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="header">
+    <div>👥 Crowd Dashboard</div>
+    <div onclick="toggleDark()" style="cursor:pointer;">🌙 Toggle</div>
+</div>
+
+<div class="container">
+
+    <!-- Upload -->
+    <form method="POST" enctype="multipart/form-data" class="upload-box">
+        <input type="file" name="image" required><br>
+        <button type="submit">Upload & Count</button>
+    </form>
+
+    {% if count is not none %}
+
+    <!-- Cards -->
+    <div class="cards">
+        <div class="card">
+            <h3>👥 Count</h3>
+            <h2>{{ count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>📊 Density</h3>
+            <h2>{{ density }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>📈 Status</h3>
+            <h2>
+                {% if density == "Low" %} Safe
+                {% elif density == "Medium" %} Moderate
+                {% else %} Crowded
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <!-- Images -->
+    <div class="image-grid">
+        <div>
+            <p>Original</p>
+            <img src="{{ uploaded_file }}">
+        </div>
+        <div>
+            <p>Detected</p>
+            <img src="{{ result_file }}">
+        </div>
+    </div>
+
+    <!--  Insights -->
+    <div class="insights">
+        <h3>📊 Insights</h3>
+        <p>
+            {% if density == "Low" %}
+            Low crowd detected. Area is safe.
+            {% elif density == "Medium" %}
+            Moderate crowd detected. Monitoring recommended.
+            {% else %}
+            High crowd detected. Immediate attention required.
+            {% endif %}
+        </p>
+    </div> 
+
+    <!-- Buttons -->
+    <a href="{{ result_file }}" download class="download">📥 Download Result</a>
+    <a href="/" class="upload-again">🔄 Upload Again</a>
+
+    {% endif %}
+
+    <!-- Project Info -->
+    <div class="info-section">
+
+        <h2 style="text-align:center;">📊 Project Information</h2>
+
+        <div class="info-grid">
+            <div class="info-card"><h3>Model</h3><p>YOLOv8</p></div>
+            <div class="info-card"><h3>Type</h3><p>Object Detection</p></div>
+            <div class="info-card"><h3>Class</h3><p>Person Detection</p></div>
+            <div class="info-card"><h3>Framework</h3><p>Flask + Python</p></div>
+        </div>
+
+        <div class="about">
+            <h3>📖 About Project</h3>
+            <p>
+            This system detects and counts people in images using YOLOv8.
+            It provides crowd density insights with a modern dashboard UI.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
