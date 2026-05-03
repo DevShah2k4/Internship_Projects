@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graph Analysis</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+/* Container */
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.15);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* Graph */
+.graph-box {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+img {
+    border-radius: 10px;
+    margin-top: 10px;
+}
+/* Dark mode */
+body.dark {
+    background: #121212;
+    color: white;
+}
+
+.dark .card,
+.dark .graph-box,
+.dark .navbar {
+    background: rgba(255,255,255,0.1);
+}
+</style>
+
+</head>
+<script>
+function toggleDark() {
+    document.body.classList.toggle("dark");
+
+    // Save mode
+    if (document.body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+
+// Load saved mode
+window.onload = function () {
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+}
+</script>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <a href="/">🏠 Home</a>
+    <a href="/graph">📊 Graph Analysis</a>
+    <!-- Toggle at right corner -->
+    <div onclick="toggleDark()" 
+         style="position:absolute; right:20px; top:15px; cursor:pointer;">
+        🌙Toggle
+    </div>
+</div>
+
+<div class="container">
+
+    <h2>📊 Crowd Analysis Graph</h2>
+
+    <!-- ✅ Average Card -->
+    <div class="card">
+        <h3>📈 Total Images Processed</h3>
+        <h1>{{ total_images if total_images else "0" }}</h1>
+    </div>
+    <!-- ✅ Average Card -->
+    <div class="card">
+        <h3>📈 Total People Count</h3>
+        <h1>{{ total_people if total_people else "0" }}</h1>
+    </div>
+    <!-- Graph -->
+    <div class="graph-box">
+        {% if graph_path %}
+            <img src="/{{ graph_path }}" width="700">
+        {% else %}
+            <p>No data available</p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

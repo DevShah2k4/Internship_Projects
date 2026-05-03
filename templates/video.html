@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Video Crowd Analysis</title>
+
+<style>
+/* ================= BASE ================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+/* ================= DARK MODE ================= */
+body.dark {
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: #e2e8f0;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 25px;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.15);
+}
+
+body.dark .navbar {
+    background: rgba(2,6,23,0.6);
+}
+
+.nav-left {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+body.dark .nav-btn {
+    background: rgba(15,23,42,0.7);
+}
+
+/* ================= DARK MODE TOGGLE ================= */
+.toggle-switch {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 999;
+}
+
+/* MAIN SWITCH */
+.switch {
+    width: 52px;
+    height: 26px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* CIRCLE */
+.circle {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: 0.3s;
+}
+
+body.dark .switch {
+    background: rgba(59,130,246,0.5);
+}
+
+body.dark .circle {
+    transform: translateX(27px);
+}
+
+/* ================= TITLE ================= */
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 25px;
+}
+
+/* ================= CARD ================= */
+.card {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.12);
+    padding: 35px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    text-align: center;
+    min-width: 340px;
+}
+
+body.dark .card,
+body.dark .result {
+    background: rgba(30,41,59,0.7);
+}
+
+/* ================= FILE UPLOAD ================= */
+.file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.15);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+body.dark .file-row {
+    background: rgba(15,23,42,0.7);
+}
+
+.file-row input {
+    display: none;
+}
+
+.browse-btn {
+    background: #2563eb;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.browse-btn:hover {
+    background: #1d4ed8;
+}
+
+.filename {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ================= BUTTON ================= */
+.btn {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ================= RESULT ================= */
+.result {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.12);
+    padding: 30px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.boxes {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.box {
+    background: rgba(0,0,0,0.25);
+    padding: 18px;
+    border-radius: 12px;
+    min-width: 120px;
+}
+
+body.dark .box {
+    background: rgba(2,6,23,0.6);
+}
+
+/* ================= TOGGLE ================= */
+.toggle-switch {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 999;
+}
+
+.switch {
+    width: 52px;
+    height: 26px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: 0.3s;
+}
+
+body.dark .switch {
+    background: rgba(59,130,246,0.5);
+}
+
+body.dark .circle {
+    transform: translateX(27px);
+}
+.upload-again {
+    display: block;
+    margin-top: 10px;
+    background: #ff9800;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+
+    <div class="nav-left">
+        <a class="nav-btn" href="/">🏠 Home</a>
+        <a class="nav-btn" href="/image">🖼 Image Analysis</a>
+    </div>
+
+</div>
+
+<!-- ================= DARK MODE TOGGLE ================= -->
+<div class="toggle-switch" onclick="toggleDarkMode()">
+    <div class="switch">
+        <div class="circle" id="circle"></div>
+    </div>
+</div>
+
+<h1 class="title">🎥 Video Crowd Analysis</h1>
+
+{% if not result %}
+<div class="card">
+
+<form method="POST" enctype="multipart/form-data">
+
+    <div class="file-row">
+        <input type="file" id="videoInput" name="video" accept="video/*" required>
+
+        <label for="videoInput" class="browse-btn">
+            Browse...
+        </label>
+
+        <span class="filename" id="fileName">No file selected</span>
+    </div>
+
+    <button class="btn">🚀 Upload & Analyze</button>
+
+</form>
+
+</div>
+{% endif %}
+
+{% if result %}
+<div class="result">
+
+<h2>📊 Result</h2>
+
+<div class="boxes">
+    <div class="box">
+        <p>Frames</p>
+        <h3>{{ result.frames }}</h3>
+    </div>
+
+    <div class="box">
+        <p>Crowd</p>
+        <h3>{{ result.count }}</h3>
+    </div>
+</div>
+<a href="/video" class="upload-again">🔄 Upload Again</a>
+</div>
+{% endif %}
+
+<script>
+
+/* FILE NAME UPDATE */
+const input = document.getElementById("videoInput");
+const fileName = document.getElementById("fileName");
+
+if (input) {
+    input.addEventListener("change", () => {
+        fileName.textContent = input.files.length
+            ? input.files[0].name
+            : "No file selected";
+    });
+}
+
+/* DARK MODE */
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+
+    const circle = document.getElementById("circle");
+    const isDark = document.body.classList.contains("dark");
+
+    if (isDark) {
+        circle.style.transform = "translateX(27px)";
+        localStorage.setItem("theme", "dark");
+    } else {
+        circle.style.transform = "translateX(0px)";
+        localStorage.setItem("theme", "light");
+    }
+}
+
+/* LOAD THEME */
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    document.getElementById("circle").style.transform = "translateX(27px)";
+}
+
+</script>
+
+</body>
+</html>
